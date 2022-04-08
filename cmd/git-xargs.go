@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gruntwork-io/git-xargs/auth"
 	"github.com/gruntwork-io/git-xargs/config"
@@ -33,6 +34,9 @@ func parseGitXargsConfig(c *cli.Context) (*config.GitXargsConfig, error) {
 	config.GithubOrg = c.String("github-org")
 	config.RepoSlice = c.StringSlice("repo")
 	config.MaxConcurrentRepos = c.Int("max-concurrent-repos")
+	config.SecondsToSleepBetweenPRs = c.Int("seconds-between-prs")
+	config.Ticker = time.NewTicker(time.Duration(c.Int("seconds-between-prs")) * time.Second)
+
 	config.Args = c.Args()
 
 	shouldReadStdIn, err := dataBeingPipedToStdIn()

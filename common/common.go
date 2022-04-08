@@ -3,23 +3,25 @@ package common
 import "github.com/urfave/cli"
 
 const (
-	GithubOrgFlagName              = "github-org"
-	DraftPullRequestFlagName       = "draft"
-	DryRunFlagName                 = "dry-run"
-	SkipPullRequestsFlagName       = "skip-pull-requests"
-	SkipArchivedReposFlagName      = "skip-archived-repos"
-	RepoFlagName                   = "repo"
-	ReposFileFlagName              = "repos"
-	CommitMessageFlagName          = "commit-message"
-	BranchFlagName                 = "branch-name"
-	BaseBranchFlagName             = "base-branch-name"
-	PullRequestTitleFlagName       = "pull-request-title"
-	PullRequestDescriptionFlagName = "pull-request-description"
-	MaxConcurrentReposFlagName     = "max-concurrent-repos"
-	DefaultCommitMessage           = "git-xargs programmatic commit"
-	DefaultPullRequestTitle        = "git-xargs programmatic pull request"
-	DefaultPullRequestDescription  = "git-xargs programmatic pull request"
-	DefaultMaxConcurrentRepos      = 0
+	GithubOrgFlagName               = "github-org"
+	DraftPullRequestFlagName        = "draft"
+	DryRunFlagName                  = "dry-run"
+	SkipPullRequestsFlagName        = "skip-pull-requests"
+	SkipArchivedReposFlagName       = "skip-archived-repos"
+	RepoFlagName                    = "repo"
+	ReposFileFlagName               = "repos"
+	CommitMessageFlagName           = "commit-message"
+	BranchFlagName                  = "branch-name"
+	BaseBranchFlagName              = "base-branch-name"
+	PullRequestTitleFlagName        = "pull-request-title"
+	PullRequestDescriptionFlagName  = "pull-request-description"
+	MaxConcurrentReposFlagName      = "max-concurrent-repos"
+	SecondsToWaitBetweenPrsFlagName = "seconds-between-prs"
+	DefaultCommitMessage            = "git-xargs programmatic commit"
+	DefaultPullRequestTitle         = "git-xargs programmatic pull request"
+	DefaultPullRequestDescription   = "git-xargs programmatic pull request"
+	DefaultMaxConcurrentRepos       = 0
+	DefaultSecondsBetweenPRs        = 12
 )
 
 var (
@@ -78,5 +80,10 @@ var (
 		Name:  MaxConcurrentReposFlagName,
 		Usage: "Limits the number of concurrent processed repositories. This is only useful if you encounter issues and need throttling when running on a very large number of repos.  Default is 0 (Unlimited)",
 		Value: DefaultMaxConcurrentRepos,
+	}
+	GenericSecondsToWaitFlag = cli.IntFlag{
+		Name:  SecondsToWaitBetweenPrsFlagName,
+		Usage: "The number of seconds to sleep between pull requests in order to respect GitHub API rate limits. Increase this number if you are being rate limited regularly. Defaults to 12 seconds.",
+		Value: DefaultSecondsBetweenPRs,
 	}
 )

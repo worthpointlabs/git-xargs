@@ -74,6 +74,7 @@ func setupApp() *cli.App {
 		common.GenericPullRequestTitleFlag,
 		common.GenericPullRequestDescriptionFlag,
 		common.GenericMaxConcurrentReposFlag,
+		common.GenericSecondsToWaitFlag,
 	}
 
 	app.Action = cmd.RunGitXargs

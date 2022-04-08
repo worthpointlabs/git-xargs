@@ -3,10 +3,26 @@ package repository
 import (
 	"github.com/google/go-github/v32/github"
 	"github.com/gruntwork-io/git-xargs/config"
+	"github.com/gruntwork-io/git-xargs/types"
 	"github.com/gruntwork-io/go-commons/logging"
 	"github.com/remeh/sizedwaitgroup"
 	"github.com/sirupsen/logrus"
 )
+
+func pullRequestWorker(gitxargsConfig *config.GitXargsConfig, pr types.OpenPrRequest, wg *sizedwaitgroup.SizedWaitGroup) {
+	defer wg.Done()
+
+	logger := logging.GetLogger("git-xargs")
+	logger.Debugf("pullRequestWorker received pull request job for repo: %s on branch: %s\n", pr.Repo, pr.Branch)
+	// Space out open PR calls to GitHub API to avoid being aggressively rate-limited
+	// Uses the gitxargsConfig Ticker which is set via default and overridden by the seconds-between-prs flag
+	<-gitxargsConfig.Ticker.C
+	// Make pull request
+	openPullRequestErr := openPullRequest(gitxargsConfig, pr.Repo, pr.Branch)
+	if openPullRequestErr != nil {
+		logger.Printf("Error opening pull request: %+v\n", openPullRequestErr)
+	}
+}
 
 // ProcessRepos loops through every repo we've selected and use a WaitGroup so that the processing can happen in parallel
 func ProcessRepos(gitxargsConfig *config.GitXargsConfig, repos []*github.Repository) error {
@@ -18,6 +34,17 @@ func ProcessRepos(gitxargsConfig *config.GitXargsConfig, repos []*github.Reposit
 
 	for _, repo := range repos {
 		wg.Add()
+
+		go func() {
+			for {
+				select {
+				case pr := <-gitxargsConfig.PRChan:
+					wg.Add()
+					go pullRequestWorker(gitxargsConfig, pr, &wg)
+				}
+			}
+		}()
+
 		go func(gitxargsConfig *config.GitXargsConfig, repo *github.Repository) error {
 			defer wg.Done()
 			// For each repo, run the supplied command against it and, if it succeeds without error,

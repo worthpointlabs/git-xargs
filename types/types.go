@@ -38,6 +38,11 @@ type AllowedRepo struct {
 	Name         string `header:"URL"`
 }
 
+type OpenPrRequest struct {
+	Repo   *github.Repository
+	Branch string
+}
+
 // PullRequest is a simple two column representation of the repo name and its PR url
 type PullRequest struct {
 	Repo string `header:"Repo name"`

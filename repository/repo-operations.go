@@ -264,11 +264,14 @@ func updateRepo(config *config.GitXargsConfig, repositoryDir string, worktree *g
 		return pushBranchErr
 	}
 
-	// Open a pull request on GitHub, of the recently pushed branch against the repository default branch
-	openPullRequestErr := openPullRequest(config, remoteRepository, branchName)
-	if openPullRequestErr != nil {
-		return openPullRequestErr
+	// Create an OpenPrRequest that can be sent into a buffered delay channel to manage calls made to GitHub
+	// and avoid aggressively rate limiting behavior
+	opr := types.OpenPrRequest{
+		Repo:   remoteRepository,
+		Branch: branchName,
 	}
+
+	config.PRChan <- opr
 
 	return nil
 }
