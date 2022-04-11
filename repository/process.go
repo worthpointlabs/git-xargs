@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+# pullRequestWorker calls the method to open a pull request after waiting for the specified seconds
 func pullRequestWorker(gitxargsConfig *config.GitXargsConfig, pr types.OpenPrRequest, wg *sizedwaitgroup.SizedWaitGroup) {
 	defer wg.Done()
 
