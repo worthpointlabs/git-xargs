@@ -10,7 +10,6 @@ defaults: &defaults
     MODULE_CI_VERSION: v0.33.1
     GOLANG_VERSION: 1.16
     GO111MODULE: auto
-    GOMAXPROCS: 2
     CGO_ENABLED: 1
 install_gruntwork_utils: &install_gruntwork_utils
   name: Install gruntwork utils
@@ -46,7 +45,7 @@ jobs:
             git config --global user.name "Grunty"
       - run:
           name: run git-xargs tests
-          command: run-go-tests --packages "./auth ./cmd ./repository" --timeout 5m
+          command: run-go-tests --parallelism 1 --packages "./auth ./cmd ./repository" --timeout 5m
           no_output_timeout: 45m
           when: always
   build-and-deploy:
