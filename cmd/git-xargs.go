@@ -36,7 +36,7 @@ func parseGitXargsConfig(c *cli.Context) (*config.GitXargsConfig, error) {
 	config.RepoSlice = c.StringSlice("repo")
 	config.MaxConcurrentRepos = c.Int("max-concurrent-repos")
 	config.SecondsToSleepBetweenPRs = c.Int("seconds-between-prs")
-	config.PullRequestRetries = c.Int("max-pull-request-retries")
+	config.PullRequestRetries = c.Int("max-pr-retries")
 	config.SecondsToSleepWhenRateLimited = c.Int("seconds-to-wait-when-rate-limited")
 
 	// A non-positive ticker value won't work, so set to the default minimum if user passed a bad value

@@ -268,8 +268,9 @@ func updateRepo(config *config.GitXargsConfig, repositoryDir string, worktree *g
 	// Create an OpenPrRequest that can be sent into a buffered delay channel to manage calls made to GitHub
 	// and avoid aggressively rate limiting behavior
 	opr := types.OpenPrRequest{
-		Repo:   remoteRepository,
-		Branch: branchName,
+		Repo:    remoteRepository,
+		Branch:  branchName,
+		Retries: 0,
 	}
 
 	config.PRChan <- opr

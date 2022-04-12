@@ -26,11 +26,17 @@ func openPullRequestsWithThrottling(gitxargsConfig *config.GitXargsConfig, pr ty
 		logger.Debugf("Throttled pull request worker delaying %d before attempting to re-open pr against repo: %s", pr.Delay, pr.Repo.GetName())
 		time.Sleep(time.Duration(pr.Delay) * time.Second)
 	}
-	// Make pull request
+	// Make pull request. Errors are handled within the method itself
 	openPullRequest(gitxargsConfig, pr)
 }
 
-// ProcessRepos loops through every repo we've selected and use a WaitGroup so that the processing can happen in parallel
+// ProcessRepos loops through every repo we've selected and uses a WaitGroup so that the processing can happen in parallel
+// We process all work that can be done up to the open pull request API call in parallel, with as many concurrent goroutines
+// as specified by the --max-concurrent-repos flag.
+// However, we then separately process all open pull request jobs separately, through the separate PRChan. We do this so that
+// we can insert a configurable buffer of time between open pull request API calls, which must be staggered to avoid tripping
+// the GitHub API's rate limiting mechanisms
+// See https://github.com/gruntwork-io/git-xargs/issues/53 for more information
 func ProcessRepos(gitxargsConfig *config.GitXargsConfig, repos []*github.Repository) error {
 	logger := logging.GetLogger("git-xargs")
 
