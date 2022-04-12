@@ -2,8 +2,9 @@ package types
 
 import (
 	"fmt"
+	"time"
 
-	"github.com/google/go-github/v32/github"
+	"github.com/google/go-github/v43/github"
 )
 
 // Event is a generic tracking occurrence that RunStats manages
@@ -39,8 +40,10 @@ type AllowedRepo struct {
 }
 
 type OpenPrRequest struct {
-	Repo   *github.Repository
-	Branch string
+	Repo    *github.Repository
+	Branch  string
+	Delay   time.Duration
+	Retries int
 }
 
 // PullRequest is a simple two column representation of the repo name and its PR url

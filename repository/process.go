@@ -1,7 +1,9 @@
 package repository
 
 import (
-	"github.com/google/go-github/v32/github"
+	"time"
+
+	"github.com/google/go-github/v43/github"
 	"github.com/gruntwork-io/git-xargs/config"
 	"github.com/gruntwork-io/git-xargs/types"
 	"github.com/gruntwork-io/go-commons/logging"
@@ -9,20 +11,23 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-# pullRequestWorker calls the method to open a pull request after waiting for the specified seconds
-func pullRequestWorker(gitxargsConfig *config.GitXargsConfig, pr types.OpenPrRequest, wg *sizedwaitgroup.SizedWaitGroup) {
+// openPullRequestsWithThrottling calls the method to open a pull request after waiting on the internal ticker channel, which
+// reflects the value of the --seconds-between-prs flag
+func openPullRequestsWithThrottling(gitxargsConfig *config.GitXargsConfig, pr types.OpenPrRequest, wg *sizedwaitgroup.SizedWaitGroup) {
 	defer wg.Done()
 
 	logger := logging.GetLogger("git-xargs")
-	logger.Debugf("pullRequestWorker received pull request job for repo: %s on branch: %s\n", pr.Repo, pr.Branch)
+	logger.Debugf("pullRequestWorker received pull request job. Delay: %d. Retries: %d for repo: %s on branch: %s\n", pr.Delay, pr.Retries, pr.Repo.GetName(), pr.Branch)
+
 	// Space out open PR calls to GitHub API to avoid being aggressively rate-limited
 	// Uses the gitxargsConfig Ticker which is set via default and overridden by the seconds-between-prs flag
 	<-gitxargsConfig.Ticker.C
-	// Make pull request
-	openPullRequestErr := openPullRequest(gitxargsConfig, pr.Repo, pr.Branch)
-	if openPullRequestErr != nil {
-		logger.Printf("Error opening pull request: %+v\n", openPullRequestErr)
+	if pr.Delay != 0 {
+		logger.Debugf("Throttled pull request worker delaying %d before attempting to re-open pr against repo: %s", pr.Delay, pr.Repo.GetName())
+		time.Sleep(time.Duration(pr.Delay) * time.Second)
 	}
+	// Make pull request
+	openPullRequest(gitxargsConfig, pr)
 }
 
 // ProcessRepos loops through every repo we've selected and use a WaitGroup so that the processing can happen in parallel
@@ -41,7 +46,7 @@ func ProcessRepos(gitxargsConfig *config.GitXargsConfig, repos []*github.Reposit
 				select {
 				case pr := <-gitxargsConfig.PRChan:
 					wg.Add()
-					go pullRequestWorker(gitxargsConfig, pr, &wg)
+					go openPullRequestsWithThrottling(gitxargsConfig, pr, &wg)
 				}
 			}
 		}()

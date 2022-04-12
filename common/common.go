@@ -3,25 +3,29 @@ package common
 import "github.com/urfave/cli"
 
 const (
-	GithubOrgFlagName               = "github-org"
-	DraftPullRequestFlagName        = "draft"
-	DryRunFlagName                  = "dry-run"
-	SkipPullRequestsFlagName        = "skip-pull-requests"
-	SkipArchivedReposFlagName       = "skip-archived-repos"
-	RepoFlagName                    = "repo"
-	ReposFileFlagName               = "repos"
-	CommitMessageFlagName           = "commit-message"
-	BranchFlagName                  = "branch-name"
-	BaseBranchFlagName              = "base-branch-name"
-	PullRequestTitleFlagName        = "pull-request-title"
-	PullRequestDescriptionFlagName  = "pull-request-description"
-	MaxConcurrentReposFlagName      = "max-concurrent-repos"
-	SecondsToWaitBetweenPrsFlagName = "seconds-between-prs"
-	DefaultCommitMessage            = "git-xargs programmatic commit"
-	DefaultPullRequestTitle         = "git-xargs programmatic pull request"
-	DefaultPullRequestDescription   = "git-xargs programmatic pull request"
-	DefaultMaxConcurrentRepos       = 0
-	DefaultSecondsBetweenPRs        = 12
+	GithubOrgFlagName                    = "github-org"
+	DraftPullRequestFlagName             = "draft"
+	DryRunFlagName                       = "dry-run"
+	SkipPullRequestsFlagName             = "skip-pull-requests"
+	SkipArchivedReposFlagName            = "skip-archived-repos"
+	RepoFlagName                         = "repo"
+	ReposFileFlagName                    = "repos"
+	CommitMessageFlagName                = "commit-message"
+	BranchFlagName                       = "branch-name"
+	BaseBranchFlagName                   = "base-branch-name"
+	PullRequestTitleFlagName             = "pull-request-title"
+	PullRequestDescriptionFlagName       = "pull-request-description"
+	MaxConcurrentReposFlagName           = "max-concurrent-repos"
+	SecondsToWaitBetweenPrsFlagName      = "seconds-between-prs"
+	DefaultCommitMessage                 = "git-xargs programmatic commit"
+	DefaultPullRequestTitle              = "git-xargs programmatic pull request"
+	DefaultPullRequestDescription        = "git-xargs programmatic pull request"
+	MaxPullRequestRetriesFlagName        = "max-pr-retries"
+	SecondsToWaitWhenRateLimitedFlagName = "seconds-to-wait-when-rate-limited"
+	DefaultMaxConcurrentRepos            = 0
+	DefaultSecondsBetweenPRs             = 1
+	DefaultMaxPullRequestRetries         = 3
+	DefaultSecondsToWaitWhenRateLimited  = 60
 )
 
 var (
@@ -85,5 +89,15 @@ var (
 		Name:  SecondsToWaitBetweenPrsFlagName,
 		Usage: "The number of seconds to sleep between pull requests in order to respect GitHub API rate limits. Increase this number if you are being rate limited regularly. Defaults to 12 seconds.",
 		Value: DefaultSecondsBetweenPRs,
+	}
+	GenericMaxPullRequestRetriesFlag = cli.IntFlag{
+		Name:  MaxPullRequestRetriesFlagName,
+		Usage: "The number of times to re-try a failed pull request. Defaults to 3.",
+		Value: DefaultMaxPullRequestRetries,
+	}
+	GenericSecondsToWaitWhenRateLimitedFlag = cli.IntFlag{
+		Name:  SecondsToWaitWhenRateLimitedFlagName,
+		Usage: "The number of additional seconds to sleep before attempting to open a PR again, when rate limited by GitHub. Defaults to 60.",
+		Value: DefaultSecondsToWaitWhenRateLimited,
 	}
 )
