@@ -14,6 +14,8 @@ import (
 // in git_test.go intercepts the call to git.PlainClone to modify the repo URL to the local checkout of gruntwork-io/fetch
 // which is bundled in data/test to allow tests to run against an actual repository without making any network calls or pushes to actual remote repositories
 func TestProcessRepo(t *testing.T) {
+	t.Skip()
+
 	t.Parallel()
 
 	// Hackily create a simple git repo at ./testdata/test-repo if it doesn't already exist
