@@ -468,7 +468,7 @@ func openPullRequest(config *config.GitXargsConfig, pr types.OpenPrRequest) erro
 
 	// the go-github library's CheckResponse method can return two different types of rate limiting error:
 	// 1. AbuseRateLimitError which may contain a Retry-After header whose value we can use to slow down, or
-	// 2. RateLimitError which may contain information about when the rate limit will be removed, that we can also use to slow down
+	// 2. RateLimitError which may contain information about when the rate limit will be removed, that we can also use to slow down.
 	// Therefore, we need to use type assertions to test for each type of error response, and accordingly fetch the data it may contain
 	// about how long git-xargs should wait before its next attempt to open a pull request
 	githubErr := github.CheckResponse(resp.Response)
