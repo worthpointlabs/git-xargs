@@ -23,7 +23,7 @@ func openPullRequestsWithThrottling(gitxargsConfig *config.GitXargsConfig, pr ty
 	// Uses the gitxargsConfig Ticker which is set via default and overridden by the seconds-between-prs flag
 	<-gitxargsConfig.Ticker.C
 	if pr.Delay != 0 {
-		logger.Debugf("Throttled pull request worker delaying %d before attempting to re-open pr against repo: %s", pr.Delay, pr.Repo.GetName())
+		logger.Debugf("Throttled pull request worker delaying %d seconds before attempting to re-open pr against repo: %s", pr.Delay, pr.Repo.GetName())
 		time.Sleep(time.Duration(pr.Delay) * time.Second)
 	}
 	// Make pull request. Errors are handled within the method itself
