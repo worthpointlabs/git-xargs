@@ -17,7 +17,7 @@ func openPullRequestsWithThrottling(gitxargsConfig *config.GitXargsConfig, pr ty
 	defer wg.Done()
 
 	logger := logging.GetLogger("git-xargs")
-	logger.Debugf("pullRequestWorker received pull request job. Delay: %d. Retries: %d for repo: %s on branch: %s\n", pr.Delay, pr.Retries, pr.Repo.GetName(), pr.Branch)
+	logger.Debugf("pullRequestWorker received pull request job. Delay: %d seconds. Retries: %d for repo: %s on branch: %s\n", pr.Delay, pr.Retries, pr.Repo.GetName(), pr.Branch)
 
 	// Space out open PR calls to GitHub API to avoid being aggressively rate-limited
 	// Uses the gitxargsConfig Ticker which is set via default and overridden by the seconds-between-prs flag
