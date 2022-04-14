@@ -30,7 +30,9 @@ func openPullRequestsWithThrottling(gitxargsConfig *config.GitXargsConfig, pr ty
 	openPullRequest(gitxargsConfig, pr)
 }
 
-// ProcessRepos loops through every repo we've selected and uses a WaitGroup so that the processing can happen in parallel
+// ProcessRepos loops through every repo we've selected and uses a WaitGroup so that the processing can happen in parallel.
+
+Only because the next line is a new sentence.
 // We process all work that can be done up to the open pull request API call in parallel, with as many concurrent goroutines
 // as specified by the --max-concurrent-repos flag.
 // However, we then separately process all open pull request jobs separately, through the separate PRChan. We do this so that
