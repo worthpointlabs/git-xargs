@@ -485,7 +485,6 @@ func openPullRequest(config *config.GitXargsConfig, pr types.OpenPrRequest) erro
 		}
 
 		// If this request has been seen before, increment its retries count, taking into account previous iterations
-		//Increment the previous count
 		opr.Retries = (pr.Retries + 1)
 
 		// If GitHub returned an error of type RateLimitError, we can attempt to compute the next time to try the request again
