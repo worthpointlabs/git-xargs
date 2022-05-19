@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -35,13 +36,12 @@ func TestHandleRepoProcessing(t *testing.T) {
 		for {
 			select {
 			case pr := <-testConfig.PRChan:
-				_ = pr
+				fmt.Println("Got pr ", pr)
 			}
 		}
 	}()
 
 	err := handleRepoProcessing(testConfig)
-
 	assert.NoError(t, err)
 }
 
