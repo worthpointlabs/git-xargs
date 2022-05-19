@@ -76,5 +76,7 @@ func NewGitXargsTestConfig() *GitXargsConfig {
 	config.CommitMessage = fmt.Sprintf("commit-message-%s", uniqueID)
 	config.GitClient = local.NewGitClient(local.MockGitProvider{})
 
+	config.Ticker = time.NewTicker(time.Duration(1) * time.Second)
+
 	return config
 }
