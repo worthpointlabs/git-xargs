@@ -152,30 +152,31 @@ $ brew install git-xargs
 
 1. **Set execute permissions**. For example, on Linux or Mac, you'd run:
 
-      ```bash
-      chmod u+x /usr/local/bin/git-xargs
-      ```
+   ```bash
+   chmod u+x /usr/local/bin/git-xargs
+   ```
 
 1. **Check it's working**. Run the version command to ensure everything is working properly:
 
-      ```bash
-      git-xargs --version
-      ```
+   ```bash
+   git-xargs --version
+   ```
 
 ### Installation option 3: Run go get
 
 1. **Ensure you have Golang installed and working properly on your system.** [Follow the official Golang install guide](https://golang.org/doc/install) to get started.
 
 1. **Run go get to install the latest release of git-xargs**:
-     ```bash
-     go get github.com/gruntwork-io/git-xargs
-     ```
+
+   ```bash
+   go get github.com/gruntwork-io/git-xargs
+   ```
 
 1. **Alternatively, use go get to install a specific release of git-xargs**:
 
-     ```bash
-     go get github.com/gruntwork-io/git-xargs@v0.0.5
-     ```
+   ```bash
+   go get github.com/gruntwork-io/git-xargs@v0.0.5
+   ```
 
 ### Try it out!
 
@@ -183,21 +184,21 @@ $ brew install git-xargs
    tokens](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
    for information on how to generate one. For example, on Linux or Mac, you'd run:
 
-      ```bash
-      export GITHUB_OAUTH_TOKEN=<your-secret-github-oauth-token>
-      ```
+   ```bash
+   export GITHUB_OAUTH_TOKEN=<your-secret-github-oauth-token>
+   ```
 
 1. **Provide a script or command and target some repos**. Here's a simple example of running the `touch` command in
    every repo in your GitHub organization. Follow the same pattern to start running your own scripts and commands
    against your own repos!
 
-      ```bash
-      git-xargs \
-        --branch-name "test-branch" \
-        --commit-message "Testing git-xargs" \
-        --github-org <enter-your-github-org-name> \
-        touch git-xargs-is-awesome.txt
-      ```
+   ```bash
+   git-xargs \
+     --branch-name "test-branch" \
+     --commit-message "Testing git-xargs" \
+     --github-org <enter-your-github-org-name> \
+     touch git-xargs-is-awesome.txt
+   ```
 
 # Reference
 
@@ -392,22 +393,22 @@ echo "gruntwork-io/terragrunt gruntwork-io/terratest" | git-xargs \
 
 `git-xargs` exposes several flags that allow you to customize its behavior to better suit your needs. For the latest info on flags, you should run `git-xargs --help`. However, a couple of the flags are worth explaining more in depth here:
 
-| Flag                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                   | Type    | Required |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
-| `--branch-name`                       | You must specify the name of the branch to make your local and remote changes on. You can further control branching behavior via `--skip-pull-requests` as explained below                                                                                                                                                                                                                                                    | String  | Yes      |
-| `--loglevel`                          | Specify the log level of messages git-xargs should print to STDOUT at runtime. By default, this is INFO - so only INFO level messages will be visible. Pass DEBUG to see runtime errors encountered by your scripts or commands. Accepted levels are TRACE, DEBUG, INFO, WARNING, ERROR, FATAL and PANIC. Default: `INFO`.                                                                                                    | String  | No       |
-| `--repos`                             | If you want to specify many repos and manage them in files (which makes batching and testing easier) then use this flag to pass the filepath to a repos file. See [the repos file format](#option-2-flat-file-of-repository-names) for more information                                                                                                                                                                       | String  | No       |
-| `--repo`                              | Use this flag to specify a single repo, e.g., `--repo gruntwork-io/cloud-nuke`. Can be passed multiple times to target several repos                                                                                                                                                                                                                                                                                          | String  | No       |
-| `--github-org`                        | If you want to target every repo in a Github org that your GITHUB_OAUTH_TOKEN has access to, pass the name of the Organization with this flag, to page through every repo via the Github API and target it                                                                                                                                                                                                                    | String  | No       |
-| `--commit-message`                    | The commit message to use when creating commits. If you supply this flag, but neither the optional `--pull-request-title` or `--pull-request-description` flags, then the commit message value will be used for all three.                                                                                                                                                                                                    | String  | No       |
-| `--skip-pull-requests`                | If you don't want any pull requests opened, but would rather have your changes committed directly to your specified branch, pass this flag. Note that it won't work if your Github repo is configured with branch protections on the branch you're trying to commit directly to!                                                                                                                                              | Boolean | No       |
-| `--skip-archived-repos`               | If you want to exclude archived (read-only) repositories from the list of targeted repos, pass this flag.                                                                                                                                                                                                                                                                                                                     | Boolean | No       |
-| `--dry-run`                           | If you are in the process of testing out `git-xargs` or your initial set of targeted repos, but you don't want to make any changes via the Github API (pushing your local changes or opening pull requests) you can pass the dry-run flag. This is useful because the output report will still tell you which repos would have been affected, without actually making changes via the Github API to your remote repositories. | Boolean | No       |
-| `--max-concurrent-repos`              | Limits the number of concurrent processed repositories. This is only useful if you encounter issues and need throttling when running on a very large number of repos. Default is `0` (Unlimited)                                                                                                                                                                                                                              | Integer | No       |
-| `--draft`                             | Whether to open pull requests in draft mode. Draft pull requests are available for public GitHub repositories and private repositories in GitHub tiered accounts. See [Draft Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests) for more details.                                                   | Boolean | No       |
-| `--seconds-between-prs`               | The number of seconds to wait between opening serial pull requests. If you are being rate limited, continue to increase this value until rate limiting eases. Note, this value cannot be negative, so if you pass a value less than 1, the seconds to wait between pull requests will be set to 1 second.                                                                                                                     | Integer | No       |
-| `--max-pr-retries`                    | The number of seconds to wait between opening serial pull requests. If you are being rate limited, continue to increase this value until rate limiting eases.                                                                                                                                                                                                                                                                 | Integer | No       |
-| `--seconds-to-wait-when-rate-limited` | The number of seconds to pause once git-xargs has detected it has been rate limited. Note that this buffer is in addition to the value of --seconds-between-prs. If you are regularly being rate limited, increase this value until rate limiting eases.                                                                                                                                                                      | Integer | No       |
+| Flag                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                     | Type    | Required |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
+| `--branch-name`                       | You must specify the name of the branch to make your local and remote changes on. You can further control branching behavior via `--skip-pull-requests` as explained below                                                                                                                                                                                                                                                                      | String  | Yes      |
+| `--loglevel`                          | Specify the log level of messages git-xargs should print to STDOUT at runtime. By default, this is INFO - so only INFO level messages will be visible. Pass DEBUG to see runtime errors encountered by your scripts or commands. Accepted levels are TRACE, DEBUG, INFO, WARNING, ERROR, FATAL and PANIC. Default: `INFO`.                                                                                                                      | String  | No       |
+| `--repos`                             | If you want to specify many repos and manage them in files (which makes batching and testing easier) then use this flag to pass the filepath to a repos file. See [the repos file format](#option-2-flat-file-of-repository-names) for more information                                                                                                                                                                                         | String  | No       |
+| `--repo`                              | Use this flag to specify a single repo, e.g., `--repo gruntwork-io/cloud-nuke`. Can be passed multiple times to target several repos                                                                                                                                                                                                                                                                                                            | String  | No       |
+| `--github-org`                        | If you want to target every repo in a Github org that your GITHUB_OAUTH_TOKEN has access to, pass the name of the Organization with this flag, to page through every repo via the Github API and target it                                                                                                                                                                                                                                      | String  | No       |
+| `--commit-message`                    | The commit message to use when creating commits. If you supply this flag, but neither the optional `--pull-request-title` or `--pull-request-description` flags, then the commit message value will be used for all three.                                                                                                                                                                                                                      | String  | No       |
+| `--skip-pull-requests`                | If you don't want any pull requests opened, but would rather have your changes committed directly to your specified branch, pass this flag. Note that it won't work if your Github repo is configured with branch protections on the branch you're trying to commit directly to! Default is false.                                                                                                                                              | Boolean | No       |
+| `--skip-archived-repos`               | If you want to exclude archived (read-only) repositories from the list of targeted repos, pass this flag. Default is false.                                                                                                                                                                                                                                                                                                                     | Boolean | No       |
+| `--dry-run`                           | If you are in the process of testing out `git-xargs` or your initial set of targeted repos, but you don't want to make any changes via the Github API (pushing your local changes or opening pull requests) you can pass the dry-run flag. This is useful because the output report will still tell you which repos would have been affected, without actually making changes via the Github API to your remote repositories. Default is false. | Boolean | No       |
+| `--max-concurrent-repos`              | Limits the number of concurrent processed repositories. This is only useful if you encounter issues and need throttling when running on a very large number of repos. Default is `0` (Unlimited).                                                                                                                                                                                                                                               | Integer | No       |
+| `--draft`                             | Whether to open pull requests in draft mode. Draft pull requests are available for public GitHub repositories and private repositories in GitHub tiered accounts. See [Draft Pull Requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests) for more details. Default is false.                                                   | Boolean | No       |
+| `--seconds-between-prs`               | The number of seconds to wait between opening serial pull requests. If you are being rate limited, continue to increase this value until rate limiting eases. Note, this value cannot be negative, so if you pass a value less than 1, the seconds to wait between pull requests will be set to 1 second. Defaults to 1 second.                                                                                                                 | Integer | No       |
+| `--max-pr-retries`                    | The number of seconds to wait between opening serial pull requests. If you are being rate limited, continue to increase this value until rate limiting eases. Defaults to 3.                                                                                                                                                                                                                                                                    | Integer | No       |
+| `--seconds-to-wait-when-rate-limited` | The number of seconds to pause once git-xargs has detected it has been rate limited. Note that this buffer is in addition to the value of --seconds-between-prs. If you are regularly being rate limited, increase this value until rate limiting eases. Defaults to 60 seconds.                                                                                                                                                                | Integer | No       |
 
 ## Best practices, tips and tricks
 

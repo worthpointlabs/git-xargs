@@ -25,23 +25,6 @@ func TestHandleRepoProcessing(t *testing.T) {
 	testConfig.PullRequestRetries = 0
 	testConfig.SecondsToSleepBetweenPRs = 1
 
-	defer close(testConfig.PRChan)
-
-	/*
-		// The GitXargsConfig object uses an unbuffered channel to send pull request messages
-		// so we need to listen for the PR messages in this test so that we don't block the channel
-		// which would deadlock this test - we also don't need to make the PR requests themselves
-		// in this test, we can discard them instead
-		go func() {
-			for {
-				select {
-				case pr := <-testConfig.PRChan:
-					fmt.Println("Got pr ", pr)
-				}
-			}
-		}()
-	*/
-
 	err := handleRepoProcessing(testConfig)
 	assert.NoError(t, err)
 }
